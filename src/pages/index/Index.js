@@ -25,7 +25,7 @@ export default class Index extends Component {
     }
 	
 	handleLogin = () => {
-		this.props.history.push("/");
+		this.props.history.push("/login");
 	}
 
     render() {
