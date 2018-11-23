@@ -17,11 +17,16 @@ export default class Index extends Component {
             scrollTop: $("#equipe").offset().top
         }, 1000);
     }
+	
     jquerySobre = () => {
         $('html, body').animate({
             scrollTop: $("#sobreProjeto").offset().top
         }, 1000);
     }
+	
+	handleLogin = () => {
+		this.props.history.push('/');
+	}
 
     render() {
         return (
@@ -44,7 +49,7 @@ export default class Index extends Component {
                                 <a className="nav-link link-pointer" onClick={this.jquerySobre}>Sobre o projeto</a>
                             </li>
                             <li className="nav-item">
-                                <button type="button" className="btn btn-success">Jogar agora</button>
+                                <button type="button" className="btn btn-success" onClick={this.handleLogin}>Jogar agora</button>
                             </li>
                         </ul>
                     </div>
