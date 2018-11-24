@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { database } from "firebase";
 
 import './styles.css';
 
@@ -14,7 +13,8 @@ export default class Login extends Component {
         this.props.history.push("/registro");
     }
 
-    handleLogin = async (event) => {
+    handleLogin = async (e) => {
+        e.preventDefault();
         const { user, password } = this.state;
 
     }
