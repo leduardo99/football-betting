@@ -29,11 +29,37 @@ export default class Registro extends Component {
 
     handleRegisterUser = async (e) => {
         e.preventDefault();
-
         const { name, username, password, email } = this.state;
-        
-        if (!name || !username || !password || !email) return;
+        console.log(this.state);
+        if (!username) {
+            $("#user").css("border-color", "red");
+            setTimeout(function () {
+                $("#user").css("border-color", "");
+            }, 3000);
+        }
 
+        if (!name) {
+            $("#name").css("border-color", "red");
+            setTimeout(function () {
+                $("#name").css("border-color", "");
+            }, 3000);
+        }
+
+        if (!password) {
+            $("#password").css("border-color", "red");
+            setTimeout(function () {
+                $("#password").css("border-color", "");
+            }, 3000);
+        }
+
+        if (!email) {
+            $("#email").css("border-color", "red");
+            setTimeout(function () {
+                $("#email").css("border-color", "");
+            }, 3000);
+        }
+
+        if (!username || !name || !password || !email) return;
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         let verifyEmail = await api.get(`users/email/${email}`);
