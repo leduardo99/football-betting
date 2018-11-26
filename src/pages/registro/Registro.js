@@ -6,6 +6,10 @@ import api from "../../services/api";
 import './styles.css';
 
 export default class Registro extends Component {
+    componentWillMount() {
+        if (sessionStorage.getItem("username")) this.props.history.push('/main');
+    }
+
     state = {
         name: "",
         username: "",

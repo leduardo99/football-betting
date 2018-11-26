@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+
 import api from "../../services/api";
 import $ from "jquery";
 
@@ -9,6 +10,10 @@ export default class Login extends Component {
     state = {
         user: "",
         password: ""
+    }
+
+    componentWillMount() {
+        if (sessionStorage.getItem("username")) this.props.history.push('/main');
     }
 
     handleRegistro = () => {
@@ -56,6 +61,7 @@ export default class Login extends Component {
             sessionStorage.setItem("email", retriveUsername.data.email);
             sessionStorage.setItem("username", retriveUsername.data.username);
             sessionStorage.setItem("admin", retriveUsername.data.admin);
+            sessionStorage.setItem("loading", true);
 
             this.props.history.push('/main');
         }
