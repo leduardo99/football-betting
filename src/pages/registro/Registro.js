@@ -42,6 +42,13 @@ export default class Registro extends Component {
             }, 3000);
         }
 
+        if (username.length > 20) {
+            $("#user").css("border-color", "red");
+            setTimeout(function () {
+                $("#user").css("border-color", "");
+            }, 3000);
+        }
+
         if (!name) {
             $("#name").css("border-color", "red");
             setTimeout(function () {
@@ -50,6 +57,13 @@ export default class Registro extends Component {
         }
 
         if (!password) {
+            $("#password").css("border-color", "red");
+            setTimeout(function () {
+                $("#password").css("border-color", "");
+            }, 3000);
+        }
+
+        if (password.length < 6) {
             $("#password").css("border-color", "red");
             setTimeout(function () {
                 $("#password").css("border-color", "");
@@ -90,16 +104,30 @@ export default class Registro extends Component {
                 $("#alert-register").removeClass("alert alert-danger");
             }, 5000)
         }
+        else if (password.length < 6) {
+            $("#alert-register").addClass("alert alert-danger").text("A senha tem menos que 6 caracteres!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-register").removeClass("alert alert-danger");
+            }, 5000)
+        }
+        else if (username.length > 20) {
+            $("#alert-register").addClass("alert alert-danger").text("O usuário não pode ultrapassar 20 caracteres!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-register").removeClass("alert alert-danger");
+            }, 5000)
+        } else {
+            await api.post('registro', { name, username, email, password });
 
-        await api.post('registro', { name, username, email, password });
+            $("#alert-register").addClass("alert alert-success").text("Cadastro realizado com sucesso. Redirecionando para o login ...");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
 
-        $("#alert-register").addClass("alert alert-success").text("Cadastro realizado com sucesso. Redirecionando para o login ...");
-        $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
-
-        let props = this.props;
-        setTimeout(function () {
-            props.history.push("/login");
-        }, 3000);
+            let props = this.props;
+            setTimeout(function () {
+                props.history.push("/login");
+            }, 3000);
+        }
     }
 
     render() {
@@ -120,7 +148,7 @@ export default class Registro extends Component {
                                 <input type="text" id="user" className="fadeIn third" placeholder="Usuário" name="username" onChange={(event) => this.handleOnChange(event)} />
                                 <input type="email" id="email" className="fadeIn fourth" placeholder="E-mail" name="email" onChange={(event) => this.handleOnChange(event)} />
                                 <input type="password" id="password" className="fadeIn five" placeholder="Senha" name="password" onChange={(event) => this.handleOnChange(event)} />
-                                <button className="fadeIn six btn-register" value="Cadastrar" id="btn-cadastrar" onClick={this.handleRegisterUser}>Cadastrar &nbsp;<i className="" id="icon-loading"></i></button>
+                                <button type="submit" className="fadeIn six btn-register" value="Cadastrar" id="btn-cadastrar" onClick={this.handleRegisterUser}>Cadastrar &nbsp;<i className="" id="icon-loading"></i></button>
                             </form>
                         </div>
                     </div>

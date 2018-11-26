@@ -43,17 +43,21 @@ export default class Main extends Component {
                         <div class="row jumbotron jumbotron">
                             <div class="container-fluid">
                                 <h1 class="display-3">Football Betting</h1>
-                                <p className="lead">Abaixo está algumas rodadas dosponíveis para jogar, para iniciar suas apostas, escolha uma delas e aperte em jogar.<br />
+                                <p className="lead">Abaixo está algumas rodadas disponíveis para jogar, para iniciar suas apostas, escolha uma delas e aperte em "jogar agora".<br />
                                     <strong>As rodadas podem ser jogadas apenas uma vez!</strong>
                                 </p>
                             </div>
                         </div>
 
+                        {/* Looping com as rodadas */}
                         <div class="card-deck">
                             <div class="card">
                                 <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordpy.png" />
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Rodada 1</h5>
+                                </div>
+                                <div className="card-footer">
+                                    <button className="btn btn-primary w-100">Jogar agora</button>
                                 </div>
                             </div>
                             <div class="card">
@@ -61,17 +65,26 @@ export default class Main extends Component {
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Rodada 2</h5>
                                 </div>
+                                <div className="card-footer">
+                                    <button className="btn btn-primary w-100">Jogar agora</button>
+                                </div>
                             </div>
                             <div class="card">
                                 <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordjs.png" />
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Rodada 3</h5>
                                 </div>
+                                <div className="card-footer">
+                                    <button className="btn btn-primary w-100">Jogar agora</button>
+                                </div>
                             </div>
                             <div class="card">
                                 <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordjs.png" />
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Rodada 4</h5>
+                                </div>
+                                <div className="card-footer">
+                                    <button className="btn btn-primary w-100">Jogar agora</button>
                                 </div>
                             </div>
                         </div>

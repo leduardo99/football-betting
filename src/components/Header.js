@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { withRouter } from "react-router";
@@ -8,7 +9,9 @@ class Header extends Component {
     state = {
         ranking: "",
         home: "",
-        admin: false
+        admin: false,
+        changePassword: "",
+        changeNewPassword: ""
     }
 
     async componentWillMount() {
@@ -29,7 +32,82 @@ class Header extends Component {
         sessionStorage.removeItem("email");
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("admin");
+        $(".modal-backdrop").remove();
         this.props.history.push('/login');
+    }
+
+    handleDeleteAccount = async (e) => {
+        e.preventDefault();
+        const { changePassword } = this.state;
+        const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
+
+        if (changePassword === response.data.password) {
+            const responseDelete = await api.delete(`users/delete/${sessionStorage.getItem("username")}`);
+            this.handleLogout();
+        } else {
+            $("#inputPasswordChange").css("border-color", "red");
+            $("#alert-excluir-conta").addClass("alert alert-danger").text("As senhas não são iguais!");
+            $("#inputPasswordChange").text("");
+            setTimeout(function () {
+                $("#alert-excluir-conta").removeClass("alert alert-danger").text("");
+                $("#inputPasswordChange").css("border-color", "");
+            }, 3000);
+        }
+
+    }
+
+    handleChangePassword = async (e) => {
+        e.preventDefault();
+        const { changePassword, changeNewPassword } = this.state;
+        const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
+        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
+
+        if (changePassword === response.data.password && changeNewPassword.length >= 6 && changeNewPassword !== response.data.password) {
+            const responseUpdate = await api.post(`alterar/senha/${sessionStorage.getItem("username")}/${changeNewPassword}`);
+            $("#alert-alterar-senha").addClass("alert alert-success").text("Senha alterada com sucesso! Redirecionando ..");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(() => {
+                $("#alert-alterar-senha").removeClass("alert alert-danger").text("");
+                this.handleLogout();
+            }, 3000);
+        } else if (changeNewPassword.length < 6) {
+            $("#inputNewPasswordChangeAlterar").css("border-color", "red");
+            $("#alert-alterar-senha").addClass("alert alert-danger").text("A senha não pode possuir menos que 6 caracteres!");
+            $("#inputPasswordChange").text("");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-alterar-senha").removeClass("alert alert-danger").text("");
+                $("#inputPasswordChangeAlterar").css("border-color", "");
+            }, 3000);
+        } else if (changePassword !== response.data.password) {
+            $("#inputPasswordChangeAlterar").css("border-color", "red");
+            $("#alert-alterar-senha").addClass("alert alert-danger").text("A senha informada não é igual a anterior!");
+            $("#inputPasswordChange").text("");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-alterar-senha").removeClass("alert alert-danger").text("");
+                $("#inputPasswordChangeAlterar").css("border-color", "");
+            }, 3000);
+        } else if (response.data.password === changeNewPassword) {
+            $("#inputPasswordChangeAlterar").css("border-color", "red");
+            $("#alert-alterar-senha").addClass("alert alert-danger").text("A nova senha não pode ser a mesma que a senha atual!");
+            $("#inputPasswordChange").text("");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-alterar-senha").removeClass("alert alert-danger").text("");
+                $("#inputPasswordChangeAlterar").css("border-color", "");
+            }, 3000);
+        }
+    }
+
+    handleOnChange = (e) => {
+        let name = e.target.name;
+        let value = e.target.value;
+        console.log(name, value)
+
+        this.setState({
+            [name]: value
+        });
     }
 
     render() {
@@ -57,8 +135,8 @@ class Header extends Component {
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Configurações</a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href=""><i class="fas fa-edit"></i> Alterar senha</a>
-                                    <a class="dropdown-item" href=""><i class="fas fa-trash-alt"></i> Apagar conta</a>
+                                    <a class="dropdown-item" data-toggle="modal" data-target="#modalAlterarSenha"><i class="fas fa-edit"></i> Alterar senha</a>
+                                    <a class="dropdown-item" data-toggle="modal" data-target="#modalExcluir"><i class="fas fa-trash-alt"></i> Apagar conta</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" onClick={this.handleLogout}><i class="fas fa-sign-out-alt"></i> Sair</a>
                                 </div>
@@ -66,6 +144,53 @@ class Header extends Component {
                         </ul>
                     </div>
                 </nav>
+
+                <div class="modal fade" id="modalExcluir" role="dialog" aria-labelledby="modalExcluirLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Você deseja realmente excluir sua conta?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form>
+                                <div className="modal-body">
+                                    <div class="" role="alert" id="alert-excluir-conta" data-dismiss="alert"></div>
+                                    <input id="inputPasswordChange" class="w-100 mx-auto" type="password" placeholder="Insira sua senha" name="changePassword" onChange={this.handleOnChange} />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" id="btn-confimarExcluir" onClick={this.handleDeleteAccount}>Confirmar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modalAlterarSenha" role="dialog" aria-labelledby="modalAlterarSenhaLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalAlterarSenhaLabel">Insira sua nova senha abaixo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form>
+                                <div className="modal-body">
+                                    <div class="" role="alert" id="alert-alterar-senha" data-dismiss="alert"></div>
+                                    <input id="inputPasswordChangeAlterar" class="w-100 mx-auto" type="password" placeholder="Senha anterior" name="changePassword" onChange={this.handleOnChange} />
+                                    <input id="inputNewPasswordChange" class="w-100 mx-auto" type="password" placeholder="Nova senha" name="changeNewPassword" onChange={this.handleOnChange} />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" id="btn-confimarAlterar" onClick={this.handleChangePassword}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </header>
         )
     }
