@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 
@@ -9,7 +10,8 @@ import './styles.css';
 export default class Login extends Component {
     state = {
         user: "",
-        password: ""
+        password: "",
+        changeEmail: ""
     }
 
     componentWillMount() {
@@ -77,6 +79,37 @@ export default class Login extends Component {
         });
     }
 
+    handleClearEmail = (e) => {
+        this.setState({ changeEmail: "" });
+    }
+
+    handleRecuperarSenha = async (e) => {
+        e.preventDefault();
+
+        let response = await api.get(`/users/email/${this.state.changeEmail}`);
+        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
+
+        if (!response.data.email) {
+            $("#inputEmailChange").css("border-color", "red");
+            $("#alert-recuperar-senha").addClass("alert alert-danger").text("O e-mail informado não existe!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-recuperar-senha").removeClass("alert alert-danger").text("");
+                $("#inputEmailChange").css("border-color", "");
+            }, 3000);
+        } else {
+            let retrivePassword = await api.post(`recuperar/senha/${this.state.changeEmail}`);
+            let sendEmail = await api.get(`/enviar/email/${this.state.changeEmail}/${retrivePassword.data.password}`);
+            $("#alert-recuperar-senha").addClass("alert alert-success").text("A senha foi redefinida com sucesso, verifique seu e-mail!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            this.setState({ changeEmail: "" });
+            setTimeout(() => {
+                $("#alert-recuperar-senha").removeClass("alert alert-sucess").text("");
+                $("#inputEmailChange").text("");
+            }, 3000);
+        }
+    }
+
     render() {
         return (
             <div className="div-panel">
@@ -114,10 +147,34 @@ export default class Login extends Component {
                         </div>
 
                         <div id="formFooter">
-                            <a className="underlineHover" href="#">Esqueceu a senha?</a>
+                            <a className="underlineHover link-pointer" data-toggle="modal" data-target="#modalRecuperarSenha">Esqueceu a senha?</a>
                         </div>
 
                     </div>
+                </div>
+
+                <div class="modal fade" id="modalRecuperarSenha" role="dialog" aria-labelledby="modalRecuperarSenhaLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalRecuperarSenhaLabel">Insira seu e-mail abaixo e senha abaixo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form>
+                                <div className="modal-body">
+                                    <div class="" role="alert" id="alert-recuperar-senha" data-dismiss="alert"></div>
+                                    <input id="inputEmailChange" class="w-100 mx-auto" type="email" placeholder="E-mail" name="changeEmail" onChange={this.handleOnChange} />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearEmail}>Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" id="btn-confimarRecuperar" onClick={this.handleRecuperarSenha}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         );

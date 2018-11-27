@@ -40,11 +40,19 @@ class Header extends Component {
         e.preventDefault();
         const { changePassword } = this.state;
         const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
+        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (changePassword === response.data.password) {
             const responseDelete = await api.delete(`users/delete/${sessionStorage.getItem("username")}`);
-            this.handleLogout();
+            $("#alert-excluir-conta").addClass("alert alert-success").text("Conta excluída com sucesso! Redirecionando ..");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(function () {
+                $("#alert-excluir-conta").removeClass("alert alert-success").text("");
+                $("#inputPasswordChange").css("border-color", "");
+                this.handleLogout();
+            }, 3000);
         } else {
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
             $("#inputPasswordChange").css("border-color", "red");
             $("#alert-excluir-conta").addClass("alert alert-danger").text("As senhas não são iguais!");
             $("#inputPasswordChange").text("");
@@ -65,7 +73,6 @@ class Header extends Component {
         if (changePassword === response.data.password && changeNewPassword.length >= 6 && changeNewPassword !== response.data.password) {
             const responseUpdate = await api.post(`alterar/senha/${sessionStorage.getItem("username")}/${changeNewPassword}`);
             $("#alert-alterar-senha").addClass("alert alert-success").text("Senha alterada com sucesso! Redirecionando ..");
-            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
             setTimeout(() => {
                 $("#alert-alterar-senha").removeClass("alert alert-danger").text("");
                 this.handleLogout();
@@ -107,6 +114,16 @@ class Header extends Component {
 
         this.setState({
             [name]: value
+        });
+    }
+
+    handleClearState = () => {
+        this.setState({
+            changeNewPassword: ""
+        });
+
+        this.setState({
+            changePassword: ""
         });
     }
 
@@ -160,8 +177,8 @@ class Header extends Component {
                                     <input id="inputPasswordChange" class="w-100 mx-auto" type="password" placeholder="Insira sua senha" name="changePassword" onChange={this.handleOnChange} />
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" id="btn-confimarExcluir" onClick={this.handleDeleteAccount}>Confirmar</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearState}>Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" id="btn-confimarExcluir" onClick={this.handleDeleteAccount}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
                                 </div>
                             </form>
                         </div>
@@ -184,7 +201,7 @@ class Header extends Component {
                                     <input id="inputNewPasswordChange" class="w-100 mx-auto" type="password" placeholder="Nova senha" name="changeNewPassword" onChange={this.handleOnChange} />
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancelar</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearState}>Cancelar</button>
                                     <button type="submit" class="btn btn-primary" id="btn-confimarAlterar" onClick={this.handleChangePassword}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
                                 </div>
                             </form>

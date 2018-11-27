@@ -4,17 +4,86 @@ import LoadingScreen from 'react-loading-screen';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
+import api from "../../services/api"
+
 import img from "../index/images/img-1.jpg";
 
 export default class Main extends Component {
     state = {
-        loading: false
+        loading: false,
+        card: []
     }
 
-    componentWillMount() {
+    async componentWillMount() {
         if (!sessionStorage.getItem("username")) this.props.history.push("/login");
-        else if(sessionStorage.getItem("loading")) this.setState({ loading: true });
-        else if (!sessionStorage.getItem("loading")) this.setState({loading: false});
+        else if (sessionStorage.getItem("loading")) {
+            this.setState({ loading: true });
+            let response = await api.get("rodada");
+            const { card } = this.state;
+
+            if (response.data.length === 0) {
+                card.push(
+                    <div class="card">
+                        <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Não há rodadas disponíveis</h5>
+                        </div>
+                        <div className="card-footer">
+                            <button className="btn btn-primary w-100" disabled>Indisponível</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            for (const i of response.data) {
+                card.push(
+                    <div class="card">
+                        <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{i.nameRodada}</h5>
+                        </div>
+                        <div className="card-footer">
+                            <button className="btn btn-primary w-100">Jogar agora</button>
+                        </div>
+                    </div>
+                );
+            }
+        }
+        else if (!sessionStorage.getItem("loading")) {
+            let response = await api.get("rodada");
+            const { card } = this.state;
+
+            console.log(response)
+
+            if (response.data.length === 0) {
+                card.push(
+                    <div class="card">
+                        <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Não há rodadas disponíveis</h5>
+                        </div>
+                        <div className="card-footer">
+                            <button className="btn btn-primary w-100" disabled>Indisponível</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            for (const i of response.data) {
+                card.push(
+                    <div class="card">
+                        <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{i.nameRodada}</h5>
+                        </div>
+                        <div className="card-footer">
+                            <button className="btn btn-primary w-100">Jogar agora</button>
+                        </div>
+                    </div>
+                );
+            }
+            this.setState({ loading: false })
+        };
     }
 
     closeLoading = () => {
@@ -51,42 +120,7 @@ export default class Main extends Component {
 
                         {/* Looping com as rodadas */}
                         <div class="card-deck">
-                            <div class="card">
-                                <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordpy.png" />
-                                <div class="card-body">
-                                    <h5 class="card-title text-center">Rodada 1</h5>
-                                </div>
-                                <div className="card-footer">
-                                    <button className="btn btn-primary w-100">Jogar agora</button>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordjs.png" />
-                                <div class="card-body">
-                                    <h5 class="card-title text-center">Rodada 2</h5>
-                                </div>
-                                <div className="card-footer">
-                                    <button className="btn btn-primary w-100">Jogar agora</button>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordjs.png" />
-                                <div class="card-body">
-                                    <h5 class="card-title text-center">Rodada 3</h5>
-                                </div>
-                                <div className="card-footer">
-                                    <button className="btn btn-primary w-100">Jogar agora</button>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top img-fluid" src={img} width="200" height="400" alt="discordjs.png" />
-                                <div class="card-body">
-                                    <h5 class="card-title text-center">Rodada 4</h5>
-                                </div>
-                                <div className="card-footer">
-                                    <button className="btn btn-primary w-100">Jogar agora</button>
-                                </div>
-                            </div>
+                            {this.state.card.map((key, i) => key)}
                         </div>
                     </main>
                     <Footer />

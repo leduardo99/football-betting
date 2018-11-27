@@ -7,6 +7,7 @@ import Registro from "./pages/registro/Registro";
 import Main from "./pages/main/Main";
 import Error404 from "./pages/error_404/Error";
 import Ranking from "./pages/ranking/Ranking"
+import Admin from "./pages/admin/Admin"
 
 export default class App extends Component {
     render() {
@@ -18,6 +19,7 @@ export default class App extends Component {
                     <Route path="/registro" exact component={Registro} />
                     <Route path="/main" exact component={Main} />
                     <Route path="/ranking" exact component={Ranking} />
+                    <Route path="/admin" exact component={Admin} />
                     <Route path="*" component={Error404} />
                 </Switch>
             </BrowserRouter>
