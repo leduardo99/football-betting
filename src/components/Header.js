@@ -117,7 +117,7 @@ class Header extends Component {
         });
     }
 
-    handleClearState = () => {
+    handleClearState = (e) => {
         this.setState({
             changeNewPassword: ""
         });
@@ -131,7 +131,25 @@ class Header extends Component {
         return (
             <header>
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                    <a className="navbar-brand h4 mb-0" href="#"><span className="foot-name">Football</span> <span className="betting-name">Betting</span></a>
+                    <a
+                        className="navbar-brand h4 mb-0 link-pointer"
+                        name="/main"
+                        onClick={(event) => this.handleGoPage(event)}>
+                        <span
+                            className="foot-name"
+                            name="/main"
+                            onClick={(event) => this.handleGoPage(event)}
+                        >
+                            Football&nbsp;
+                        </span>
+                        <span
+                            className="betting-name"
+                            name="/main"
+                            onClick={(event) => this.handleGoPage(event)}
+                        >
+                            Betting
+                        </span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -144,7 +162,15 @@ class Header extends Component {
                                 <a class="nav-link" href="" name="/ranking" onClick={(event) => this.handleGoPage(event)}>Ranking</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link invisible" href="" id="admin">Admin</a>
+                                <li class="nav-item dropdown link-pointer invisible" id="admin">
+                                    <a class="nav-link dropdown-toggle" id="navbarDropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Admin</a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownAdmin">
+                                        <a class="dropdown-item"><i class="fas fa-users"></i> Usuários</a>
+                                        <a class="dropdown-item" name="/admin/criar_rodada" onClick={(event) => this.handleGoPage(event)}><i class="fas fa-plus-square"></i> Criar rodada</a>
+                                        <a class="dropdown-item"><i class="fas fa-trash-alt"></i> Deletar rodada</a>
+                                    </div>
+                                </li>
                             </li>
                         </ul>
                         <ul class="navbar-nav ml-auto">
@@ -174,7 +200,7 @@ class Header extends Component {
                             <form>
                                 <div className="modal-body">
                                     <div class="" role="alert" id="alert-excluir-conta" data-dismiss="alert"></div>
-                                    <input id="inputPasswordChange" class="w-100 mx-auto" type="password" placeholder="Insira sua senha" name="changePassword" onChange={this.handleOnChange} />
+                                    <input id="inputPasswordChange" class="w-100 mx-auto" type="password" placeholder="Insira sua senha" name="changePassword" value={this.state.changePassword} onChange={this.handleOnChange} />
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearState}>Cancelar</button>
@@ -197,8 +223,8 @@ class Header extends Component {
                             <form>
                                 <div className="modal-body">
                                     <div class="" role="alert" id="alert-alterar-senha" data-dismiss="alert"></div>
-                                    <input id="inputPasswordChangeAlterar" class="w-100 mx-auto" type="password" placeholder="Senha anterior" name="changePassword" onChange={this.handleOnChange} />
-                                    <input id="inputNewPasswordChange" class="w-100 mx-auto" type="password" placeholder="Nova senha" name="changeNewPassword" onChange={this.handleOnChange} />
+                                    <input id="inputPasswordChangeAlterar" class="w-100 mx-auto" type="password" placeholder="Senha anterior" name="changePassword" value={this.state.changePassword} onChange={this.handleOnChange} />
+                                    <input id="inputNewPasswordChange" class="w-100 mx-auto" type="password" placeholder="Nova senha" name="changeNewPassword" value={this.state.changeNewPassword} onChange={this.handleOnChange} />
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearState}>Cancelar</button>

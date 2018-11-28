@@ -70,14 +70,30 @@ export default class Main extends Component {
             }
 
             for (const i of response.data) {
+                if (i.active) {
+                    card.push(
+                        <div class="card">
+                            <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{i.nameRodada}</h5>
+                            </div>
+                            <div className="card-footer">
+                                <button className="btn btn-primary w-100">Jogar agora</button>
+                            </div>
+                        </div>
+                    );
+                }
+            }
+
+            if (card.length === 0) {
                 card.push(
                     <div class="card">
                         <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
                         <div class="card-body">
-                            <h5 class="card-title text-center">{i.nameRodada}</h5>
+                            <h5 class="card-title text-center">Não há rodadas disponíveis</h5>
                         </div>
                         <div className="card-footer">
-                            <button className="btn btn-primary w-100">Jogar agora</button>
+                            <button className="btn btn-primary w-100" disabled>Indisponível</button>
                         </div>
                     </div>
                 );

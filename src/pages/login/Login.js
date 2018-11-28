@@ -103,6 +103,7 @@ export default class Login extends Component {
             $("#alert-recuperar-senha").addClass("alert alert-success").text("A senha foi redefinida com sucesso, verifique seu e-mail!");
             $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
             this.setState({ changeEmail: "" });
+            $("#inputEmailChange").val(this.state.changeEmail);
             setTimeout(() => {
                 $("#alert-recuperar-senha").removeClass("alert alert-sucess").text("");
                 $("#inputEmailChange").text("");
