@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { withRouter } from "react-router";
 import api from "../services/api";
 import $ from "jquery";
+import config from "../config/config";
 
 class Header extends Component {
     state = {
@@ -15,7 +16,7 @@ class Header extends Component {
     }
 
     async componentWillMount() {
-        let response = await api.get(`/users/username/${sessionStorage.getItem("username")}`);
+        let response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
 
         if (response.data.admin) {
             this.setState({ admin: true });
@@ -40,6 +41,7 @@ class Header extends Component {
         e.preventDefault();
         const { changePassword } = this.state;
         const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
+        
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (changePassword === response.data.password) {
@@ -68,6 +70,7 @@ class Header extends Component {
         e.preventDefault();
         const { changePassword, changeNewPassword } = this.state;
         const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
+        
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (changePassword === response.data.password && changeNewPassword.length >= 6 && changeNewPassword !== response.data.password) {

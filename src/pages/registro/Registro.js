@@ -34,7 +34,6 @@ export default class Registro extends Component {
     handleRegisterUser = async (e) => {
         e.preventDefault();
         const { name, username, password, email } = this.state;
-        console.log(this.state);
         if (!username) {
             $("#user").css("border-color", "red");
             setTimeout(function () {

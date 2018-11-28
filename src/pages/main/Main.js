@@ -18,7 +18,8 @@ export default class Main extends Component {
         if (!sessionStorage.getItem("username")) this.props.history.push("/login");
         else if (sessionStorage.getItem("loading")) {
             this.setState({ loading: true });
-            let response = await api.get("rodada");
+            let response = await api.get("/rodada");
+
             const { card } = this.state;
 
             if (response.data.length === 0) {
@@ -50,10 +51,9 @@ export default class Main extends Component {
             }
         }
         else if (!sessionStorage.getItem("loading")) {
-            let response = await api.get("rodada");
+            let response = await api.get("/rodada");
+            
             const { card } = this.state;
-
-            console.log(response)
 
             if (response.data.length === 0) {
                 card.push(

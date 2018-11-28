@@ -28,6 +28,23 @@ export default class Admin extends Component {
         e.preventDefault();
         const { team, position, points, data, nameRodada } = this.state;
 
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (element.team === team) {
+                $("#alert-admin").addClass("alert alert-danger").text("O time já foi adicionado, adicione outro time!");
+                setTimeout(function () {
+                    $("#alert-admin").removeClass("alert alert-danger").text("");
+                }, 3000);
+                return;
+            } else if (element.position === position) {
+                $("#alert-admin").addClass("alert alert-danger").text("Já existe um time na posição informada, informe outra posição!");
+                setTimeout(function () {
+                    $("#alert-admin").removeClass("alert alert-danger").text("");
+                }, 3000);
+                return;
+            }
+        }
+
         if (!team || !position || !points || !nameRodada) {
             $("#alert-admin").addClass("alert alert-danger").text("Os campos não podem estar vazio!");
             setTimeout(function () {
@@ -108,7 +125,7 @@ export default class Admin extends Component {
         }
 
         try {
-            let response = await api.post('admin/criar/rodada', { users: [], tableAdmin: this.state.data, nameRodada: this.state.nameRodada });
+            let response = await api.post('/admin/criar/rodada', { users: [], tableAdmin: this.state.data, nameRodada: this.state.nameRodada });
 
             if (response.data === false) {
                 $("#alert-admin-rodada").addClass("alert alert-danger").text("O nome da rodada já está em uso!");
@@ -176,7 +193,7 @@ export default class Admin extends Component {
                         </label>{" "}
                         <label>
                             <input
-                                type="text"
+                                type="number"
                                 name="position"
                                 id="position"
                                 placeholder="Posição"
@@ -185,7 +202,7 @@ export default class Admin extends Component {
                         </label>
                         <label>
                             <input
-                                type="text"
+                                type="number"
                                 name="points"
                                 id="points"
                                 placeholder="Pontos"

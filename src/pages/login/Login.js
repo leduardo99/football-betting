@@ -43,30 +43,36 @@ export default class Login extends Component {
         if (!user || !password) return;
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
-        let retriveUsername = await api.get(`users/username/${user}`);
+        try {
+            let retriveUsername = await api.get(`/users/username/${user}`);
 
-        if (!retriveUsername.data) {
-            $("#alert-login").addClass("alert alert-danger").text("O usuário informado é inválido!");
-            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
-            setTimeout(function () {
-                $("#alert-login").removeClass("alert alert-danger");
-            }, 5000)
-        }
-        else if (password !== retriveUsername.data.password) {
-            $("#alert-login").addClass("alert alert-danger").text("A senha informada está incorreta!");
-            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
-            setTimeout(function () {
-                $("#alert-login").removeClass("alert alert-danger");
-            }, 5000)
-        } else {
-            sessionStorage.setItem("name", retriveUsername.data.name);
-            sessionStorage.setItem("email", retriveUsername.data.email);
-            sessionStorage.setItem("username", retriveUsername.data.username);
-            sessionStorage.setItem("admin", retriveUsername.data.admin);
-            sessionStorage.setItem("loading", true);
+            if (!retriveUsername.data) {
+                $("#alert-login").addClass("alert alert-danger").text("O usuário informado é inválido!");
+                $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+                setTimeout(function () {
+                    $("#alert-login").removeClass("alert alert-danger");
+                }, 5000)
+            }
+            else if (password !== retriveUsername.data.password) {
+                $("#alert-login").addClass("alert alert-danger").text("A senha informada está incorreta!");
+                $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+                setTimeout(function () {
+                    $("#alert-login").removeClass("alert alert-danger");
+                }, 5000)
+            } else {
+                sessionStorage.setItem("name", retriveUsername.data.name);
+                sessionStorage.setItem("email", retriveUsername.data.email);
+                sessionStorage.setItem("username", retriveUsername.data.username);
+                sessionStorage.setItem("admin", retriveUsername.data.admin);
+                sessionStorage.setItem("loading", true);
 
-            this.props.history.push('/main');
+                this.props.history.push('/main');
+            }
+        } catch (error) {
+            $("#alert-login").addClass("alert alert-danger").text("Ocorreu um erro ao solicitar sua requisição!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
         }
+
     }
 
     handleOnChange = (e) => {
@@ -87,6 +93,7 @@ export default class Login extends Component {
         e.preventDefault();
 
         let response = await api.get(`/users/email/${this.state.changeEmail}`);
+
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (!response.data.email) {
@@ -98,7 +105,8 @@ export default class Login extends Component {
                 $("#inputEmailChange").css("border-color", "");
             }, 3000);
         } else {
-            let retrivePassword = await api.post(`recuperar/senha/${this.state.changeEmail}`);
+            let retrivePassword = await api.post(`/recuperar/senha/${this.state.changeEmail}`);
+
             let sendEmail = await api.get(`/enviar/email/${this.state.changeEmail}/${retrivePassword.data.password}`);
             $("#alert-recuperar-senha").addClass("alert alert-success").text("A senha foi redefinida com sucesso, verifique seu e-mail!");
             $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
