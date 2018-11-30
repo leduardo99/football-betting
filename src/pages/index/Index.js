@@ -42,13 +42,10 @@ export default class Index extends Component {
                     <div className="collapse navbar-collapse" id="navbar-side">
                         <ul className="navbar-nav ml-auto">
                             <li className="nav-item">
-                                <a className="nav-link" href="#">Github</a>
+                                <a className="nav-link link-pointer" onClick={this.jquerySobre}>Sobre o projeto</a>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link link-pointer " onClick={this.jqueryEquipe}>Equipe</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link link-pointer" onClick={this.jquerySobre}>Sobre o projeto</a>
                             </li>
                             <li className="nav-item">
                                 <button type="button" className="btn btn-success" onClick={this.handleLogin}>Jogar agora</button>
