@@ -18,6 +18,7 @@ export default class JogarRodada extends Component {
     }
 
     async componentWillMount() {
+        if (!sessionStorage.getItem("username") || !sessionStorage.getItem("nameRodada")) return this.props.history.push("/main");
         let response = await api.get(`rodada/name/${sessionStorage.getItem("nameRodada")}`);
         response.data.tableAdmin.map(element => {
             this.state.teams.push(element.name);

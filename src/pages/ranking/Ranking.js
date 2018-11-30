@@ -4,7 +4,7 @@ import Table from "../../components/TableRanking";
 
 export default class Ranking extends Component {
     componentWillMount() {
-        //if (!sessionStorage.getItem("username")) this.props.history.push("/login");
+        if (!sessionStorage.getItem("username")) this.props.history.push("/login");
     }
 
     render() {

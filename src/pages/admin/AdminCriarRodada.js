@@ -19,6 +19,7 @@ export default class Admin extends Component {
     }
 
     componentWillMount() {
+        if (sessionStorage.getItem("admin") === false || !sessionStorage.getItem("username")) return this.props.history.push("/main");
         $.ajax({
             headers: { 'X-Auth-Token': '63ca4f51870a40aa8d72ad9ef3f7d753' },
             url: "http://api.football-data.org/v2/competitions?plan=TIER_ONE",

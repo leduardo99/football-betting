@@ -19,6 +19,7 @@ export default class AdminEncerrarRodada extends Component {
     }
 
     async componentWillMount() {
+        if (sessionStorage.getItem("admin") === false || !sessionStorage.getItem("username")) return this.props.history.push("/main");
         let response = await api.get(`rodada`);
 
         let obj = await response.data.map(function (data, i) {

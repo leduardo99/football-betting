@@ -17,7 +17,7 @@ class Header extends Component {
 
     async componentWillMount() {
         let response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
-
+        sessionStorage.setItem("admin", response.data.admin);
         if (response.data.admin) {
             this.setState({ admin: true });
             $("#admin").removeClass("invisible");
