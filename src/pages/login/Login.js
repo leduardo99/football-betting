@@ -12,7 +12,6 @@ export default class Login extends Component {
         user: "",
         password: "",
         changeEmail: "",
-        buttonState: ""
     }
 
     componentWillMount() {
@@ -42,8 +41,7 @@ export default class Login extends Component {
         }
 
         if (!user || !password) return;
-        //$("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
-        this.setState({ buttonState: 'loading' })
+        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         try {
             let retriveUsername = await api.get(`/users/username/${user}`);
@@ -62,7 +60,6 @@ export default class Login extends Component {
                     $("#alert-login").removeClass("alert alert-danger");
                 }, 5000)
             } else {
-                this.setState({ buttonState: 'success' });
 
                 sessionStorage.setItem("name", retriveUsername.data.name);
                 sessionStorage.setItem("email", retriveUsername.data.email);

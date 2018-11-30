@@ -41,21 +41,23 @@ export default class Main extends Component {
             }
 
             for (const i of response.data) {
-                card.push(
-                    <div class="card">
-                        <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
-                        <div class="card-body">
-                            <h5 class="card-title text-center">{i.nameRodada}</h5>
+                if (i.active) {
+                    card.push(
+                        <div class="card">
+                            <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{i.nameRodada}</h5>
+                            </div>
+                            <div className="card-footer">
+                                <button className="btn btn-primary btn-block" name="/rodada/jogar_rodada" onClick={(event) => {
+                                    sessionStorage.setItem("nameRodada", i.nameRodada);
+                                    this.handleGoPage(event);
+                                }
+                                }>Jogar</button>
+                            </div>
                         </div>
-                        <div className="card-footer">
-                            <button className="btn btn-primary w-100" name="/rodada/jogar_rodada" onClick={(event) => {
-                                sessionStorage.setItem("nameRodada", i.nameRodada);
-                                this.handleGoPage(event);
-                            }
-                            }>Jogar</button>
-                        </div>
-                    </div>
-                );
+                    );
+                }
             }
         }
         else if (!sessionStorage.getItem("loading")) {
@@ -126,7 +128,7 @@ export default class Main extends Component {
     }
 
     render() {
-        
+
         return (
             <div>
                 <LoadingScreen
