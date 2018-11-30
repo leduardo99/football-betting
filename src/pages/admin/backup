@@ -12,79 +12,65 @@ import $ from "jquery";
 export default class Admin extends Component {
     state = {
         data: [],
-        competitions: [],
-        select: [],
-        teams: [],
         nameRodada: ""
     }
 
-    componentWillMount() {
-        $.ajax({
-            headers: { 'X-Auth-Token': '63ca4f51870a40aa8d72ad9ef3f7d753' },
-            url: "http://api.football-data.org/v2/competitions?plan=TIER_ONE",
-            dataType: 'json',
-            type: 'GET',
-        }).done(response => {
-            for (const i of response.competitions) {
-                this.state.competitions.push(i);
-            }
-            
-            this.state.select.push(<option>Selecione uma liga</option>)
-            this.state.competitions.map((data) =>
-                this.state.select.push(<option value={data.id} id={data.name}>{data.name}</option>)
-            )
-
-            this.setState({ select: this.state.select });
-
-            console.log(this.state.select)
-        });
-    }
-
     handleOnChange = (e) => {
-        this.setState({ teams: [] });
-
         let name = e.target.name;
         let value = e.target.value;
-        console.log(name, value);
 
         this.setState({
             [name]: value
         });
+    }
 
-        $.ajax({
-            headers: { 'X-Auth-Token': '63ca4f51870a40aa8d72ad9ef3f7d753' },
-            url: `http://api.football-data.org/v2/competitions/${value}/standings?plan=TIER_ONE`,
-            dataType: 'json',
-            type: 'GET',
-        }).done(response => {
-            let obj = {};
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { team, position, points, data, nameRodada } = this.state;
 
-            for (const i of response.standings) {
-                if (i.stage === "REGULAR_SEASON" && i.type === "TOTAL") {
-                    for (const j of i.table) {
-                        this.state.teams.push(obj = {
-                            name: j.team.name,
-                            position: j.position,
-                            points: j.points,
-                            won: j.won,
-                            lost: j.lost
-                        });
-                    }
-                }
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (element.team === team) {
+                $("#alert-admin").addClass("alert alert-danger").text("O time já foi adicionado, adicione outro time!");
+                setTimeout(function () {
+                    $("#alert-admin").removeClass("alert alert-danger").text("");
+                }, 3000);
+                return;
+            } else if (element.position === position) {
+                $("#alert-admin").addClass("alert alert-danger").text("Já existe um time na posição informada, informe outra posição!");
+                setTimeout(function () {
+                    $("#alert-admin").removeClass("alert alert-danger").text("");
+                }, 3000);
+                return;
             }
+        }
 
-            this.setState({ teams: this.state.teams });
-        });
-    }
+        if (!team || !position || !points || !nameRodada) {
+            $("#alert-admin").addClass("alert alert-danger").text("Os campos não podem estar vazio!");
+            setTimeout(function () {
+                $("#alert-admin").removeClass("alert alert-danger").text("");
+            }, 3000);
+            return;
+        } else if (data.length === 20) {
+            $("#alert-admin").addClass("alert alert-danger").text("O valor máximo de times é 20, não é possível adicionar mais times!");
+            setTimeout(function () {
+                $("#alert-admin").removeClass("alert alert-danger").text("");
+            }, 3000);
+            return;
+        }
 
-    handleGetNameLiga = (e) => {
-        let name = e.target.name;
-        let value = e.target.value;
-        console.log(name, value)
+        let obj = {
+            team: this.state.team,
+            points: this.state.points,
+            position: this.state.position,
+        }
+        this.state.data.push(obj);
+
         this.setState({
-            [name]: value
-        });
-    }
+            data: this.state.data
+        })
+        console.log(this.state.data)
+    };
 
     renderEditable = cellInfo => {
         return (
@@ -120,16 +106,16 @@ export default class Admin extends Component {
     }
 
     saveTableAdmin = async () => {
+        const { data, nameRodada } = this.state;
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
-
-        if (this.state.teams.length < 1) {
+        if (data.length < 1) {
             $("#alert-admin-rodada").addClass("alert alert-danger").text("A tabela de times não pode ser vazia!");
             $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
             setTimeout(function () {
                 $("#alert-admin-rodada").removeClass("alert alert-danger").text("");
             }, 3000);
             return;
-        } else if (!this.state.competition) {
+        } else if (!nameRodada) {
             $("#alert-admin-rodada").addClass("alert alert-danger").text("O nome da rodada não pode ser vazio!");
             $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
             setTimeout(function () {
@@ -139,10 +125,10 @@ export default class Admin extends Component {
         }
 
         try {
-            let response = await api.post('/admin/criar/rodada', { users: [], tableAdmin: this.state.teams, nameRodada: `${this.state.competition}`.replace('2013', "Brasileirão Série A").replace('2021', "Premier League").replace('2016', "Championship").replace('2015', "Ligue 1").replace('2002', "Bundesliga").replace('2019', "Serie A").replace('2003', "Eredivise").replace('2017', "Primeira Liga").replace('2014', "Primera Divison") });
+            let response = await api.post('/admin/criar/rodada', { users: [], tableAdmin: this.state.data, nameRodada: this.state.nameRodada });
 
             if (response.data === false) {
-                $("#alert-admin-rodada").addClass("alert alert-danger").text("A rodada já foi criada, crie uma rodada de outra liga!");
+                $("#alert-admin-rodada").addClass("alert alert-danger").text("O nome da rodada já está em uso!");
                 $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
 
                 setTimeout(function () {
@@ -158,8 +144,13 @@ export default class Admin extends Component {
                 $("#alert-admin-rodada").removeClass("alert alert-success").text("");
             }, 3000);
 
-            await this.setState({ teams: [] });
-            await this.setState({ competition: "" });
+            await this.setState({ data: [] });
+            await this.setState({ nameRodada: "" });
+
+            $("#nameRodada").val(this.setState.name)
+            $("#team").val(this.setState.team)
+            $("#points").val(this.setState.points)
+            $("#position").val(this.setState.position)
 
             await console.log(response);
         } catch (error) {
@@ -173,6 +164,7 @@ export default class Admin extends Component {
     }
 
     render() {
+        const { data } = this.state;
 
         return (
             <div>
@@ -182,13 +174,45 @@ export default class Admin extends Component {
                     <div className="container"><p className="h2">Criação de rodadas</p></div>
                     <form onSubmit={this.handleSubmit}>
                         <label>
-                            <select className="form-control" name="competition" onChange={(event) => { this.handleOnChange(event) }}>
-                                {this.state.select}
-                            </select>
+                            <input
+                                type="text"
+                                name="nameRodada"
+                                id="nameRodada"
+                                placeholder="Nome da Rodada"
+                                onChange={(event) => this.handleOnChange(event)}
+                            />
+                        </label>
+                        <label>
+                            <input
+                                type="text"
+                                name="team"
+                                id="team"
+                                placeholder="Time"
+                                onChange={(event) => this.handleOnChange(event)}
+                            />
+                        </label>{" "}
+                        <label>
+                            <input
+                                type="number"
+                                name="position"
+                                id="position"
+                                placeholder="Posição"
+                                onChange={(event) => this.handleOnChange(event)}
+                            />
+                        </label>
+                        <label>
+                            <input
+                                type="number"
+                                name="points"
+                                id="points"
+                                placeholder="Pontos"
+                                onChange={(event) => this.handleOnChange(event)}
+                            />
                         </label>
                     </form>
 
                     <div className="container">
+                        <button className="btn btn-primary" id="btn-add" onClick={this.handleSubmit}>Adicionar time</button>&nbsp;
                         <button className="btn btn-success" id="btn-add" data-toggle="modal" data-target="#modalSalvarTabela">Criar rodada</button>
                     </div>
 
@@ -196,8 +220,8 @@ export default class Admin extends Component {
                         <ReactTable
                             previousText="Anterior"
                             nextText="Próximo"
-                            noDataText="Ainda não houve jogos nesta liga"
-                            data={this.state.teams}
+                            noDataText="Sem dados"
+                            data={data}
                             columns={[
                                 {
                                     Header: "#",
@@ -205,22 +229,18 @@ export default class Admin extends Component {
                                 },
                                 {
                                     Header: "Time",
-                                    accessor: "name",
+                                    accessor: "team",
                                 },
                                 {
                                     Header: "Pontos",
                                     accessor: "points",
                                 },
                                 {
-                                    Header: "Vitórias",
-                                    accessor: "won"
-                                },
-                                {
-                                    Header: "Derrotas",
-                                    accessor: "lost"
+                                    Header: "Remover",
+                                    Cell: this.removeRow
                                 }
                             ]}
-                            defaultPageSize={36}
+                            defaultPageSize={20}
                             className="-striped -highlight"
                         />
                     </div>
@@ -244,7 +264,7 @@ export default class Admin extends Component {
                     </div>
                 </div>
                 <Footer />
-            </div >
+            </div>
         );
     }
 }

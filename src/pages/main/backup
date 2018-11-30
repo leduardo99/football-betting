@@ -52,7 +52,7 @@ export default class Main extends Component {
                                 sessionStorage.setItem("nameRodada", i.nameRodada);
                                 this.handleGoPage(event);
                             }
-                            }>Jogar</button>
+                            }>Jogar agora</button>
                         </div>
                     </div>
                 );
@@ -71,7 +71,7 @@ export default class Main extends Component {
                             <h5 class="card-title text-center">Não há rodadas disponíveis</h5>
                         </div>
                         <div className="card-footer">
-                            <button className="btn btn-primary btn-block" disabled>Indisponível</button>
+                            <button className="btn btn-primary w-100" disabled>Indisponível</button>
                         </div>
                     </div>
                 );
@@ -86,11 +86,11 @@ export default class Main extends Component {
                                 <h5 class="card-title text-center">{i.nameRodada}</h5>
                             </div>
                             <div className="card-footer">
-                                <button className="btn btn-primary btn-block" name="/rodada/jogar_rodada" onClick={(event) => {
+                                <button className="btn btn-primary w-100" name="/rodada/jogar_rodada" onClick={(event) => {
                                     sessionStorage.setItem("nameRodada", i.nameRodada);
                                     this.handleGoPage(event);
                                 }
-                                }>Jogar</button>
+                                }>Jogar agora</button>
                             </div>
                         </div>
                     );
@@ -100,12 +100,12 @@ export default class Main extends Component {
             if (card.length === 0) {
                 card.push(
                     <div class="card">
-                        <img class="card-img-top img-thumbnail img-fluid" src={img} alt="discordpy.png" />
+                        <img class="card-img-top img-fluid" src={img} alt="discordpy.png" />
                         <div class="card-body">
                             <h5 class="card-title text-center">Não há rodadas disponíveis</h5>
                         </div>
                         <div className="card-footer">
-                            <button className="btn btn-primary btn-block" disabled>Indisponível</button>
+                            <button className="btn btn-primary w-100" disabled>Indisponível</button>
                         </div>
                     </div>
                 );
@@ -126,7 +126,6 @@ export default class Main extends Component {
     }
 
     render() {
-        
         return (
             <div>
                 <LoadingScreen
@@ -141,7 +140,7 @@ export default class Main extends Component {
                         <div class="row jumbotron jumbotron">
                             <div class="container-fluid">
                                 <h1 class="display-3">Football Betting</h1>
-                                <p className="lead">Abaixo está algumas rodadas disponíveis para jogar, para iniciar suas apostas, escolha uma delas e aperte em "jogar".<br />
+                                <p className="lead">Abaixo está algumas rodadas disponíveis para jogar, para iniciar suas apostas, escolha uma delas e aperte em "jogar agora".<br />
                                 </p>
                             </div>
                         </div>

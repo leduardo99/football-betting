@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+
 import { withRouter } from "react-router";
 import api from "../services/api";
 import $ from "jquery";
-import config from "../config/config";
 
 class Header extends Component {
     state = {
@@ -41,7 +41,7 @@ class Header extends Component {
         e.preventDefault();
         const { changePassword } = this.state;
         const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
-        
+
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (changePassword === response.data.password) {
@@ -70,14 +70,14 @@ class Header extends Component {
         e.preventDefault();
         const { changePassword, changeNewPassword } = this.state;
         const response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
-        
+
         $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (changePassword === response.data.password && changeNewPassword.length >= 6 && changeNewPassword !== response.data.password) {
             const responseUpdate = await api.post(`alterar/senha/${sessionStorage.getItem("username")}/${changeNewPassword}`);
             $("#alert-alterar-senha").addClass("alert alert-success").text("Senha alterada com sucesso! Redirecionando ..");
             setTimeout(() => {
-                $("#alert-alterar-senha").removeClass("alert alert-danger").text("");
+                $("#alert-alterar-senha").removeClass("alert alert-success").text("");
                 this.handleLogout();
             }, 3000);
         } else if (changeNewPassword.length < 6) {
@@ -130,6 +130,34 @@ class Header extends Component {
         });
     }
 
+    handleResetRanking = async (e) => {
+        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
+        try {
+            let ranking = await api.get("ranking");
+            if (ranking.data.length === 0) {
+                $("#alert-reset-ranking").addClass("alert alert-danger").text("Ainda não há usuários rankeados, não é possível resetar o ranking!");
+                $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+                setTimeout(() => {
+                    $("#alert-reset-ranking").removeClass("alert alert-danger").text("");
+                }, 3000);
+                return;
+            }
+            let response = await api.delete(`ranking/reset`);
+            $("#alert-reset-ranking").addClass("alert alert-success").text("O ranking foi resetado com sucesso!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(() => {
+                $("#alert-reset-ranking").removeClass("alert alert-success").text("");
+            }, 3000);
+        } catch (error) {
+            console.error(error);
+            $("#alert-reset-ranking").addClass("alert alert-danger").text("Ocorreu um erro na sua requisição!");
+            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            setTimeout(() => {
+                $("#alert-reset-ranking").removeClass("alert alert-danger").text("");
+            }, 3000);
+        }
+    }
+
     render() {
         return (
             <header>
@@ -169,13 +197,16 @@ class Header extends Component {
                                     <a class="nav-link dropdown-toggle" id="navbarDropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Admin</a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownAdmin">
-                                        <a class="dropdown-item"><i class="fas fa-users"></i> Usuários</a>
+                                        <a class="dropdown-item" name="/admin/editar_usuario" onClick={(event) => this.handleGoPage(event)}><i class="fas fa-users"></i> Usuários</a>
+                                        <a class="dropdown-item" name="/admin/encerrar_rodada" onClick={(event) => this.handleGoPage(event)}><i class="fas fa-edit"></i> Rodadas</a>
                                         <a class="dropdown-item" name="/admin/criar_rodada" onClick={(event) => this.handleGoPage(event)}><i class="fas fa-plus-square"></i> Criar rodada</a>
-                                        <a class="dropdown-item"><i class="fas fa-trash-alt"></i> Deletar rodada</a>
+                                        <a class="dropdown-item" data-toggle="modal" data-target="#modalResetarRanking"><i class="fas fa-list-ol"></i> Resetar Ranking</a>
                                     </div>
                                 </li>
                             </li>
                         </ul>
+
+
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item dropdown link-pointer">
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -234,6 +265,24 @@ class Header extends Component {
                                     <button type="submit" class="btn btn-primary" id="btn-confimarAlterar" onClick={this.handleChangePassword}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modalResetarRanking" role="dialog" aria-labelledby="modalResetarRankingLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="" role="alert" id="alert-reset-ranking" data-dismiss="alert"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalResetarRankingLabel">Você deseja realmente resetar o ranking?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="btn-confimarExcluir" onClick={this.handleResetRanking}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -11,7 +11,8 @@ export default class Login extends Component {
     state = {
         user: "",
         password: "",
-        changeEmail: ""
+        changeEmail: "",
+        buttonState: ""
     }
 
     componentWillMount() {
@@ -41,7 +42,8 @@ export default class Login extends Component {
         }
 
         if (!user || !password) return;
-        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
+        //$("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
+        this.setState({ buttonState: 'loading' })
 
         try {
             let retriveUsername = await api.get(`/users/username/${user}`);
@@ -60,6 +62,8 @@ export default class Login extends Component {
                     $("#alert-login").removeClass("alert alert-danger");
                 }, 5000)
             } else {
+                this.setState({ buttonState: 'success' });
+
                 sessionStorage.setItem("name", retriveUsername.data.name);
                 sessionStorage.setItem("email", retriveUsername.data.email);
                 sessionStorage.setItem("username", retriveUsername.data.username);
@@ -94,12 +98,12 @@ export default class Login extends Component {
 
         let response = await api.get(`/users/email/${this.state.changeEmail}`);
 
-        $("#icon-loading").addClass("fas fa-sync-alt loading-refresh-animate");
+        $("#icon-loading-confirmar").addClass("fas fa-sync-alt loading-refresh-animate");
 
         if (!response.data.email) {
             $("#inputEmailChange").css("border-color", "red");
             $("#alert-recuperar-senha").addClass("alert alert-danger").text("O e-mail informado não existe!");
-            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            $("#icon-loading-confirmar").removeClass("fas fa-sync-alt loading-refresh-animate");
             setTimeout(function () {
                 $("#alert-recuperar-senha").removeClass("alert alert-danger").text("");
                 $("#inputEmailChange").css("border-color", "");
@@ -109,7 +113,7 @@ export default class Login extends Component {
 
             let sendEmail = await api.get(`/enviar/email/${this.state.changeEmail}/${retrivePassword.data.password}`);
             $("#alert-recuperar-senha").addClass("alert alert-success").text("A senha foi redefinida com sucesso, verifique seu e-mail!");
-            $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
+            $("#icon-loading-confirmar").removeClass("fas fa-sync-alt loading-refresh-animate");
             this.setState({ changeEmail: "" });
             $("#inputEmailChange").val(this.state.changeEmail);
             setTimeout(() => {
@@ -126,9 +130,9 @@ export default class Login extends Component {
                     <div class="" role="alert" id="alert-login" data-dismiss="alert"></div>
                     <div id="formContent">
                         <div id="formHeader">
-                            <h2 className="active">Login</h2>
+                            <h2 className="h2-login active">Login</h2>
 
-                            <h2 className="inactive underlineHover" onClick={this.handleRegistro}>Cadastrar</h2>
+                            <h2 className="h2-login inactive underlineHover" onClick={this.handleRegistro}>Cadastrar</h2>
                         </div>
 
                         <div className="form-padding">
@@ -178,7 +182,7 @@ export default class Login extends Component {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearEmail}>Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" id="btn-confimarRecuperar" onClick={this.handleRecuperarSenha}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
+                                    <button type="submit" class="btn btn-primary" id="btn-confimarRecuperar" onClick={this.handleRecuperarSenha}>Confirmar &nbsp;<i className="" id="icon-loading-confirmar"></i></button>
                                 </div>
                             </form>
                         </div>

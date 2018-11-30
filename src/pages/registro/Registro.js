@@ -136,9 +136,9 @@ export default class Registro extends Component {
                     <div class="" role="alert" id="alert-register" data-dismiss="alert"></div>
                     <div id="formContent">
                         <div id="formHeader">
-                            <h2 className="inactive underlineHover" id="loginButton" onClick={this.handleLogin}>Login</h2>
+                            <h2 className="h2-login inactive underlineHover" id="loginButton" onClick={this.handleLogin}>Login</h2>
 
-                            <h2 className="active">Cadastrar</h2>
+                            <h2 className="h2-login active">Cadastrar</h2>
                         </div>
 
                         <div className="form-padding">

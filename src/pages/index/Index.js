@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+
 import $ from "jquery";
 
 import './styles.css';
@@ -17,17 +18,17 @@ export default class Index extends Component {
             scrollTop: $("#equipe").offset().top
         }, 1000);
     }
-	
+
     jquerySobre = () => {
         $('html, body').animate({
             scrollTop: $("#sobreProjeto").offset().top
         }, 1000);
     }
-	
-	handleLogin = () => {
+
+    handleLogin = () => {
         if (sessionStorage.getItem("username")) this.props.history.push('/main');
-		this.props.history.push("/login");
-	}
+        this.props.history.push("/login");
+    }
 
     render() {
         return (
@@ -56,6 +57,7 @@ export default class Index extends Component {
                     </div>
                 </nav>
 
+
                 <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
                         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -82,8 +84,8 @@ export default class Index extends Component {
                 <div className="container" id="sobreProjeto">
                     <div className="row">
                         <div className="col-12 text-center mt-5">
-                            <h1 className="display-3">Sobre o projeto</h1> 
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                            <h1 className="display-3">Sobre o projeto</h1>
+                            <p>Este projeto foi desenvolvido totalmente em JavaScript. No Front-End foi utilizado <a href="https://reactjs.org/">ReactJs</a> e no Back-End <a href="https://nodejs.org/">NodeJs</a>. O projeto se trata de um jogo de palpites no qual o usuário terá que jogar uma Liga (rodada) e dizer qual será a posição final dos times e quantos pontos eles fizeram. Ao enviar seu palpite será gerado uma pontuação e a pontuação ficará disponível no rank geral.</p>
                         </div>
                     </div>
                 </div>
