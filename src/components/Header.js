@@ -48,7 +48,7 @@ class Header extends Component {
             const responseDelete = await api.delete(`users/delete/${sessionStorage.getItem("username")}`);
             $("#alert-excluir-conta").addClass("alert alert-success").text("Conta excluída com sucesso! Redirecionando ..");
             $("#icon-loading").removeClass("fas fa-sync-alt loading-refresh-animate");
-            setTimeout(function () {
+            setTimeout(() => {
                 $("#alert-excluir-conta").removeClass("alert alert-success").text("");
                 $("#inputPasswordChange").css("border-color", "");
                 this.handleLogout();

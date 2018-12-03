@@ -154,7 +154,7 @@ export default class JogarRodada extends Component {
             this.setState({ data: [] });
             sessionStorage.removeItem("nameRodada");
 
-            setTimeout(function () {
+            setTimeout(() => {
                 $("#alert-admin-rodada").removeClass("alert alert-success").text("");
                 $(".modal-backdrop").remove();
                 this.props.history.push("/main");
