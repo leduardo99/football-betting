@@ -13,7 +13,7 @@ class Header extends Component {
         admin: false,
         changePassword: "",
         changeNewPassword: ""
-    }
+    };
 
     async componentWillMount() {
         let response = await api.get(`users/username/${sessionStorage.getItem("username")}`);
@@ -34,8 +34,8 @@ class Header extends Component {
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("admin");
         $(".modal-backdrop").remove();
-        this.props.history.push('/login');
-    }
+        this.props.history.push("/login");
+    };
 
     handleDeleteAccount = async (e) => {
         e.preventDefault();
@@ -238,7 +238,7 @@ class Header extends Component {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={this.handleClearState}>Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" id="btn-confimarExcluir" onClick={this.handleDeleteAccount}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
+                                    <button type="submit" class="btn btn-primary" id="btn-confimarExcluir" name="/login" onClick={(event) => { this.handleDeleteAccount(event) }}>Confirmar &nbsp;<i className="" id="icon-loading"></i></button>
                                 </div>
                             </form>
                         </div>
