@@ -140,9 +140,11 @@ export default class JogarRodada extends Component {
 
             for (const i of rodadas.data.tableAdmin) {
                 for (const j of data) {
-                    if (i.name === j.team) pontos += 1;
-                    if (i.points === j.points) pontos += 1;
-                    if (i.position === j.position) pontos += 1;
+                    if (i.name === j.team) {
+                        pontos += 1;
+                        if (i.points === parseInt(j.points)) pontos += 1;
+                    }
+                    //if (i.position === j.position) pontos += 1;
                 }
             }
 
@@ -154,7 +156,7 @@ export default class JogarRodada extends Component {
             this.setState({ data: [] });
             sessionStorage.removeItem("nameRodada");
 
-            setTimeout(() => {
+            setTimeout(function () {
                 $("#alert-admin-rodada").removeClass("alert alert-success").text("");
                 $(".modal-backdrop").remove();
                 this.props.history.push("/main");
