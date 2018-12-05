@@ -159,9 +159,9 @@ export default class JogarRodada extends Component {
             setTimeout(() => {
                 $("#alert-admin-rodada").removeClass("alert alert-success").text("");
                 $(".modal-backdrop").remove();
-                this.props.history.push("/main");
             }, 3000);
 
+            await this.props.history.push("/main");
             await console.log(response);
         } catch (error) {
             $("#alert-admin-rodada").addClass("alert alert-danger").text("Ocorreu um erro ao jogar a rodada!");
